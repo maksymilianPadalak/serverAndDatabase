@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Databse app!</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orelega+One&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h1>This is an simple app that stores data in database.</h1>
+      <div class="input-wrapper">
+        <input type="text" />
+      </div>
+      <button class="submit-text">Submit text to database</button>
+      <button class="log-inputs">Log inputs</button>
+      <h3 class="validation"></h3>
+    </div>
+
+    <script>
+      const submitBtn = document.querySelector(".submit-text");
+      const logInputs = document.querySelector(".log-inputs");
+      const validation = document.querySelector(".validation");
+
+
+      //saving data to database
+      submitBtn.addEventListener("click", async () => {
+        const input = document.querySelector("input").value;
+        const responseGet = await fetch("/api");
+        const fetchedData = await responseGet.json();
+
+
+        //validation
+        for (i of fetchedData) {
+          if (input === i.input) {
+            validation.style.color = "red";
+            validation.textContent =
+              "It has already been stored inside a databse!";
+            return;
+          } else if (input === "") {
+            validation.style.color = "red";
+            validation.textContent =
+              "Input is empty. Please enter data.";
+            return;
+          } else {
+            validation.style.color = "green";
+            validation.textContent =
+              "All good!";
+          }
+        }
+
+        const data = { input: input };
+        const post = {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        };
+
+        const response = await fetch("/api", post);
+      });
+
+      //console log all inputs stored in database
+      logInputs.addEventListener("click", async () => {
+        fetch("/api")
+          .then((response) => response.json())
+          .then((fetchedData) => {
+            fetchedData.forEach((element) => {
+              console.log(element.input);
+            });
+          });
+      });
+    </script>
+  </body>
+</html>
