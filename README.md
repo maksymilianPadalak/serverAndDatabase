@@ -1,4 +1,4 @@
-# serverAndDatabase
+# Server and database
 
 This is a simple project in which i learn how to create local server using node.js and work with Database.
 
